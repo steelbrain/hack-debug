@@ -34,11 +34,11 @@ class Debug {
   public function log(...$Contents) : void {
     if ($this->Enabled) {
       if ($this->Color === null) {
-        $Prefix = date(DATE_RFC850) . ' ' . $this->Prefix;
+        $Prefix = date(DATE_RFC850) . ' ' . $this->Prefix . "\n";
       } else {
-        $Prefix = "  \033[" . $this->Color . 'm' . $this->Prefix . "\033[0m";
+        $Prefix = "  \033[" . $this->Color . 'm' . $this->Prefix . "\033[0m ";
       }
-      fwrite($this->Output, $Prefix . static::format($Contents). "\n");
+      fwrite($this->Output, $Prefix . static::format(...$Contents). "\n");
     } // else { No-Op }
   }
 

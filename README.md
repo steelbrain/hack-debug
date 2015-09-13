@@ -42,4 +42,4 @@ $Mailer->log('Terminating');
 
 This project is licensed under the terms of MIT License. See the license file for more info.
 
-[debug]:https://www.npmjs.com/package/debug
+[1]:https://www.npmjs.com/package/debug

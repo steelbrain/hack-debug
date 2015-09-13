@@ -11,6 +11,7 @@ class Debug {
     '0;33', // brown
   };
   public static int $ColorsPointer = -1;
+  public static Map<string, Debug> $Instances = Map{};
 
   private resource $Output;
   private bool $Enabled;
@@ -39,5 +40,14 @@ class Debug {
       $ToWrite .= "\n";
       fwrite($this->Output, $ToWrite);
     } // else { No-Op }
+  }
+
+  public static function Log(string $Prefix, string $ToWrite) {
+    $Instance = static::$Instances->get($Prefix);
+    if ($Instance === null) {
+      $Instance = new Debug($Prefix);
+      static::$Instances->set($Prefix, $Instance);
+    }
+    $Instance->log($ToWrite);
   }
 }

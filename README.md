@@ -16,6 +16,7 @@ class Debug {
   public function enable(): void
   public function disable(): void
   public function log(string $Content): void
+  public static function Log(string $Prefix, string $Content): void
 }
 ```
 
@@ -28,7 +29,7 @@ $Mailer = new Debug('HG:DAEMON:MAILER');
 
 // Enable debugger even when env DEBUG says otherwise
 $Daemon->enable();
-$Mailer->enable(); 
+$Mailer->enable();
 
 $Daemon->log('Staring Mailer');
 $Mailer->log('Booting up');

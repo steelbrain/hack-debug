@@ -12,7 +12,7 @@ class Debug {
   };
   public static int $ColorsPointer = -1;
   public static Map<string, Debug> $Instances = Map{};
-  public static resource $DefaultOutput = STDOUT;
+  public static ?resource $DefaultOutput = null;
 
   private resource $Output;
   private bool $Enabled;
@@ -20,6 +20,11 @@ class Debug {
   public function __construct(public string $Prefix, ?resource $Output = null, bool $Enabled = false) {
     if ($Output === null) {
       $Output = static::$DefaultOutput;
+      if ($Output === null) {
+        if (defined('STDOUT')) {
+          $Output = STDOUT;
+        } else throw new Exception('No output stream defined');
+      }
     }
     $this->Output = $Output;
     $this->Color = posix_isatty($Output) ? static::$Colors[static::$ColorsPointer = (static::$ColorsPointer + 1 % static::$Colors->count())] : null;

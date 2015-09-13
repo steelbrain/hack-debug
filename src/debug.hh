@@ -12,13 +12,14 @@ class Debug {
   };
   public static int $ColorsPointer = -1;
   public static Map<string, Debug> $Instances = Map{};
+  public static resource $DefaultOutput = STDOUT;
 
   private resource $Output;
   private bool $Enabled;
   private ?string $Color;
   public function __construct(public string $Prefix, ?resource $Output = null, bool $Enabled = false) {
     if ($Output === null) {
-      $Output = STDOUT;
+      $Output = static::$DefaultOutput;
     }
     $this->Output = $Output;
     $this->Color = posix_isatty($Output) ? static::$Colors[static::$ColorsPointer = (static::$ColorsPointer + 1 % static::$Colors->count())] : null;

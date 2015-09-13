@@ -34,31 +34,11 @@ class Debug {
   public function log(...$Contents) : void {
     if ($this->Enabled) {
       if ($this->Color === null) {
-        $ToWrite = [date(DATE_RFC850)];
+        $Prefix = date(DATE_RFC850) . ' ' . $this->Prefix;
       } else {
-        $ToWrite = ["  \033[" . $this->Color . 'm' . $this->Prefix . "\033[0m"];
+        $Prefix = "  \033[" . $this->Color . 'm' . $this->Prefix . "\033[0m";
       }
-      foreach ($Contents as $Entry) {
-        if (is_string($Entry) || is_int($Entry)) {
-          $ToWrite[] = $Entry;
-        } else if (is_bool($Entry)) {
-          $ToWrite[] = $Entry ? 'true' : 'false';
-        } else if (is_null($Entry)) {
-          $ToWrite[] = 'null';
-        } else if (is_object($Entry)) {
-          if ($Entry instanceof Exception) {
-            $ToWrite[] = get_class($Entry). ' { '. $Entry->getMessage() ." }\n    ".implode("\n    ", explode("\n", $Entry->getTraceAsString()));
-          } else if ($Entry instanceof JsonSerializable) {
-            $ToWrite[] = get_class($Entry). ' { '. substr(json_encode($Entry), 1, -1) .' }';
-          } else if ($Entry instanceof Stringish) {
-            $ToWrite[] = get_class($Entry). ' { '. $Entry .' }';
-          } else {
-            $ToWrite[] = get_class($Entry). ' { Object }';
-          }
-        } // else { No-Op }
-      }
-      $ToWrite = implode(' ', $ToWrite). "\n";
-      fwrite($this->Output, $ToWrite);
+      fwrite($this->Output, $Prefix . static::format($Contents). "\n");
     } // else { No-Op }
   }
 
@@ -69,5 +49,30 @@ class Debug {
       static::$Instances->set($Prefix, $Instance);
     }
     $Instance->log(...$Contents);
+  }
+  public static function format(...$Contents):string {
+    $ToWrite = [];
+    foreach ($Contents as $Entry) {
+      if (is_string($Entry) || is_int($Entry)) {
+        $ToWrite[] = $Entry;
+      } else if (is_bool($Entry)) {
+        $ToWrite[] = $Entry ? 'true' : 'false';
+      } else if (is_null($Entry)) {
+        $ToWrite[] = 'null';
+      } else if (is_object($Entry)) {
+        if ($Entry instanceof Exception) {
+          $ToWrite[] = get_class($Entry). ' { '. $Entry->getMessage() ." }\n    ".implode("\n    ", explode("\n", $Entry->getTraceAsString()));
+        } else if ($Entry instanceof JsonSerializable) {
+          $ToWrite[] = get_class($Entry). ' { '. substr(json_encode($Entry), 1, -1) .' }';
+        } else if ($Entry instanceof Stringish) {
+          $ToWrite[] = get_class($Entry). ' { '. $Entry .' }';
+        } else {
+          $ToWrite[] = get_class($Entry). ' { Object }';
+        }
+      } else if (is_array($Entry)) {
+        $ToWrite[] = '[ ' . static::format(...$Entry) . ' ]';
+      } // else { No-Op }
+    }
+    return implode(' ', $ToWrite);
   }
 }

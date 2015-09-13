@@ -12,11 +12,12 @@ Hack-Debug provides colored output for different modules which is nicer for the 
 ```php
 <?hh
 class Debug {
-  public function __construct(string $Prefix, ?resource $Output = STDOUT, bool $Enabled = Detect)
+  public static resource $DefaultOutput = STDOUT
+  public function __construct(string $Prefix, ?resource $Output = static::$Resource, bool $Enabled = Detect)
   public function enable(): void
   public function disable(): void
-  public function log(string $Content): void
-  public static function this(string $Prefix, string $Content): void
+  public function log(...$Content): void
+  public static function this(string $Prefix, ...$Content): void
 }
 ```
 

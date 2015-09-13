@@ -11,3 +11,20 @@ $Mailer->log('Booting up');
 $Mailer->log('Booted up');
 $Daemon->log('Terminating Mailer');
 $Mailer->log('Terminating');
+
+function doSomethingBad() {
+  throw new Exception('Something Bad');
+}
+
+try {
+  doSomethingBad();
+} catch (Exception $e) {
+  $Daemon->log('Exception Caught', $e);
+}
+
+class Test {
+
+}
+
+$Test = new Test();
+$Daemon->log($Test);

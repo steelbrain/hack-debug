@@ -31,24 +31,43 @@ class Debug {
   public function disable() : void {
     $this->Enabled = false;
   }
-  public function log(string $ToWrite) : void {
+  public function log(...$Contents) : void {
     if ($this->Enabled) {
       if ($this->Color === null) {
-        $ToWrite = date(DATE_RFC850) . ' ' . $ToWrite;
+        $ToWrite = [date(DATE_RFC850)];
       } else {
-        $ToWrite = "  \033[" . $this->Color . 'm' . $this->Prefix . "\033[0m " . $ToWrite;
+        $ToWrite = ["  \033[" . $this->Color . 'm' . $this->Prefix . "\033[0m"];
       }
-      $ToWrite .= "\n";
+      foreach ($Contents as $Entry) {
+        if (is_string($Entry) || is_int($Entry)) {
+          $ToWrite[] = $Entry;
+        } else if (is_bool($Entry)) {
+          $ToWrite[] = $Entry ? 'true' : 'false';
+        } else if (is_null($Entry)) {
+          $ToWrite[] = 'null';
+        } else if (is_object($Entry)) {
+          if ($Entry instanceof Exception) {
+            $ToWrite[] = get_class($Entry). ' { '. $Entry->getMessage() ." }\n    ".implode("\n    ", explode("\n", $Entry->getTraceAsString()));
+          } else if ($Entry instanceof JsonSerializable) {
+            $ToWrite[] = get_class($Entry). ' { '. substr(json_encode($Entry), 1, -1) .' }';
+          } else if ($Entry instanceof Stringish) {
+            $ToWrite[] = get_class($Entry). ' { '. $Entry .' }';
+          } else {
+            $ToWrite[] = get_class($Entry). ' { Object }';
+          }
+        } // else { No-Op }
+      }
+      $ToWrite = implode(' ', $ToWrite). "\n";
       fwrite($this->Output, $ToWrite);
     } // else { No-Op }
   }
 
-  public static function this(string $Prefix, string $ToWrite) {
+  public static function this(string $Prefix, ...$Contents) {
     $Instance = static::$Instances->get($Prefix);
     if ($Instance === null) {
       $Instance = new Debug($Prefix);
       static::$Instances->set($Prefix, $Instance);
     }
-    $Instance->log($ToWrite);
+    $Instance->log(...$Contents);
   }
 }

@@ -16,7 +16,7 @@ class Debug {
   public function enable(): void
   public function disable(): void
   public function log(string $Content): void
-  public static function Log(string $Prefix, string $Content): void
+  public static function this(string $Prefix, string $Content): void
 }
 ```
 

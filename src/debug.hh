@@ -43,7 +43,7 @@ class Debug {
     } // else { No-Op }
   }
 
-  public static function Log(string $Prefix, string $ToWrite) {
+  public static function this(string $Prefix, string $ToWrite) {
     $Instance = static::$Instances->get($Prefix);
     if ($Instance === null) {
       $Instance = new Debug($Prefix);

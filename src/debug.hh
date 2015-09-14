@@ -67,7 +67,7 @@ class Debug {
       } else if (is_object($Entry)) {
         $WriteEntry = get_class($Entry);
         if ($Entry instanceof Exception) {
-          $WriteEntry .= ' { '. $Entry->getMessage() ." }\n    ".implode("\n    ", explode("\n", $Entry->getTraceAsString()))
+          $WriteEntry .= ' { '. $Entry->getMessage() ." }\n    ".implode("\n    ", explode("\n", $Entry->getTraceAsString()));
         } else if ($Entry instanceof JsonSerializable) {
           $WriteEntry .= ' { '. substr(json_encode($Entry), 1, -1) .' }';
         } else if ($Entry instanceof Stringish) {

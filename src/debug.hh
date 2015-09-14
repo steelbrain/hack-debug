@@ -65,15 +65,17 @@ class Debug {
       } else if (is_null($Entry)) {
         $ToWrite[] = 'null';
       } else if (is_object($Entry)) {
+        $WriteEntry = get_class($Entry);
         if ($Entry instanceof Exception) {
-          $ToWrite[] = get_class($Entry). ' { '. $Entry->getMessage() ." }\n    ".implode("\n    ", explode("\n", $Entry->getTraceAsString()));
+          $WriteEntry .= ' { '. $Entry->getMessage() ." }\n    ".implode("\n    ", explode("\n", $Entry->getTraceAsString()))
         } else if ($Entry instanceof JsonSerializable) {
-          $ToWrite[] = get_class($Entry). ' { '. substr(json_encode($Entry), 1, -1) .' }';
+          $WriteEntry .= ' { '. substr(json_encode($Entry), 1, -1) .' }';
         } else if ($Entry instanceof Stringish) {
-          $ToWrite[] = get_class($Entry). ' { '. $Entry .' }';
+          $WriteEntry .= ' { '. $Entry .' }';
         } else {
-          $ToWrite[] = get_class($Entry). ' { Object }';
+          $WriteEntry .= ' { Object }';
         }
+        $ToWrite[] = $WriteEntry;
       } else if (is_array($Entry)) {
         $ToWrite[] = '[ ' . static::format(...$Entry) . ' ]';
       } // else { No-Op }

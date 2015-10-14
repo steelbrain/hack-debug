@@ -39,7 +39,7 @@ class Debug {
   public function log(...$Contents) : void {
     if ($this->Enabled) {
       if ($this->Color === null) {
-        $Prefix = date(DATE_RFC850) . ' ' . $this->Prefix . "\n";
+        $Prefix = date(DATE_RFC850) . ' ➸ ' . $this->Prefix . "\n ";
       } else {
         $Prefix = "  \033[" . $this->Color . 'm' . $this->Prefix . "\033[0m ";
       }
